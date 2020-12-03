@@ -2,6 +2,7 @@
 import os
 import shutil
 import sys
+import socket
 
 def check_reboot():
     #***Returns if the computer has a pendin reboot.***
@@ -29,7 +30,7 @@ def check_no_network():
 def main():
     checks=[
         (check_reboot, "Pending Reboot"),
-        (check_root_full, "Root partition full")
+        (check_root_full, "Root partition full"),
         (check_no_network, "no network")
     ]
     everything_ok = True

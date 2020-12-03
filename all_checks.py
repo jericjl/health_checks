@@ -14,17 +14,37 @@ def check_disk_full(disk, min_gb, min_percent):
     if percent_free < min_percent or gigabytes_free < min_gb:
         return True
     return False
+def check_root_full():
+    """Returns True if the root partition is full, False otherwise"""
+    return check_disk_full(disk="/", min_gb=2, min_percent=10)
+
+
+def check_no_network():
+    try:
+        socket.gethostbyname("www.google.com")
+        return False
+    except:
+        return True
 
 def main():
-    if check_reboot():
-        print("Pending Reboot.")
-        sys.exit(1)
-    if check_disk_full(disk="/",min_gb =2 ,min_percent = 10):
-        print("Disk full.")
-        sys.exit(1)
+    checks=[
+        (check_reboot, "Pending Reboot"),
+        (check_root_full, "Root partition full")
+        (check_no_network, "no network")
+    ]
+    everything_ok = True
+    for check,msg in checks:
+        if check():
+            print(msg)
+            everything_ok = False
+        if not everything_ok:
+            sys.exit(1)
+
+        print("Everything ok.")    
+        sys.exit(0)
     
-    print("Everything ok.")
-    sys.exit(0)
+    
+    
 
 main()
 
